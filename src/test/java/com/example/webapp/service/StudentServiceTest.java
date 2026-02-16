@@ -178,7 +178,6 @@ class StudentServiceTest {
     @DisplayName("Should save student with ID when updating")
     void shouldSaveStudent_WhenUpdating() {
         // Arrange
-        testStudentDTO.setId(1L); // Simulate updating existing student
         testStudent.setId(1L);
 
         when(modelMapper.map(testStudentDTO, Student.class)).thenReturn(testStudent);
@@ -263,7 +262,7 @@ class StudentServiceTest {
         when(studentRepository.findAll()).thenReturn(null);
 
         // Act - service returns null when repository returns null
-        List<StudentDTO> result = studentService.getAllStudents();
+        List<Student> result = studentService.getAllStudents();
 
         // Assert
         assertThat(result).isNull();
