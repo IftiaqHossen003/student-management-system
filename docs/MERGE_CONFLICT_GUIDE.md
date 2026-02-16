@@ -292,7 +292,7 @@ git mergetool
 
 # Or use VS Code as merge tool
 git config --global merge.tool vscode
-git config --global mergetool.vscode.cmd 'code --wait $MERGED'
+git config --global mergetool.vscode.cmd 'code --wait "$MERGED"'
 git mergetool
 ```
 

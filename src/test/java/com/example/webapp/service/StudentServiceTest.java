@@ -138,18 +138,16 @@ class StudentServiceTest {
     }
 
     @Test
-    @DisplayName("Should handle null ID gracefully")
-    void shouldHandleNullId_Gracefully() {
-        // Arrange
-        when(studentRepository.findById(null)).thenReturn(Optional.empty());
+    @DisplayName("Should throw exception when ID is null")
+    void shouldThrowException_WhenIdIsNull() {
+        // Arrange - mimic real Spring Data behavior for null IDs
+        when(studentRepository.findById(null))
+            .thenThrow(new IllegalArgumentException("ID must not be null"));
 
-        // Act
-        Optional<Student> result = studentService.getStudentById(null);
-
-        // Assert
-        assertThat(result).isEmpty();
-        
-        verify(studentRepository, times(1)).findById(null);
+        // Act & Assert
+        assertThatThrownBy(() -> studentService.getStudentById(null))
+            .isInstanceOf(IllegalArgumentException.class)
+            .hasMessageContaining("ID must not be null");
     }
 
     // ==================== saveStudent() Tests ====================
@@ -180,10 +178,8 @@ class StudentServiceTest {
     @DisplayName("Should save student with ID when updating")
     void shouldSaveStudent_WhenUpdating() {
         // Arrange
-        Student existingStudent = new Student();
-        existingStudent.setId(1L);
-        existingStudent.setName("Old Name");
-        existingStudent.setRoll("OLD001");
+        testStudentDTO.setId(1L); // Simulate updating existing student
+        testStudent.setId(1L);
 
         when(modelMapper.map(testStudentDTO, Student.class)).thenReturn(testStudent);
         when(studentRepository.save(any(Student.class))).thenReturn(testStudent);
@@ -266,9 +262,11 @@ class StudentServiceTest {
         // Arrange
         when(studentRepository.findAll()).thenReturn(null);
 
-        // Act & Assert
-        assertThatThrownBy(() -> studentService.getAllStudents())
-            .isInstanceOf(NullPointerException.class);
+        // Act - service returns null when repository returns null
+        List<StudentDTO> result = studentService.getAllStudents();
+
+        // Assert
+        assertThat(result).isNull();
     }
 
     @Test

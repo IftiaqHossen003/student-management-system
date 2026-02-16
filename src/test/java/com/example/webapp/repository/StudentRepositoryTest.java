@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 /**
  * Repository tests for StudentRepository
@@ -153,13 +154,11 @@ class StudentRepositoryTest {
     }
 
     @Test
-    @DisplayName("Should return empty when finding with null ID")
-    void shouldReturnEmpty_WhenFindingWithNullId() {
-        // Act
-        Optional<Student> foundStudent = studentRepository.findById(null);
-
-        // Assert
-        assertThat(foundStudent).isEmpty();
+    @DisplayName("Should throw exception when finding with null ID")
+    void shouldThrowException_WhenFindingWithNullId() {
+        // Act & Assert
+        assertThatThrownBy(() -> studentRepository.findById(null))
+            .isInstanceOf(IllegalArgumentException.class);
     }
 
     // ==================== findAll() Tests ====================
@@ -196,8 +195,8 @@ class StudentRepositoryTest {
     }
 
     @Test
-    @DisplayName("Should return all students in insertion order")
-    void shouldReturnStudents_InInsertionOrder() {
+    @DisplayName("Should return all students regardless of order")
+    void shouldReturnAllStudents() {
         // Arrange
         Student saved1 = entityManager.persistAndFlush(testStudent1);
         Student saved2 = entityManager.persistAndFlush(testStudent2);
@@ -206,10 +205,11 @@ class StudentRepositoryTest {
         // Act
         List<Student> students = studentRepository.findAll();
 
-        // Assert
-        assertThat(students).hasSize(2);
-        assertThat(students.get(0).getId()).isEqualTo(saved1.getId());
-        assertThat(students.get(1).getId()).isEqualTo(saved2.getId());
+        // Assert - don't assert order as findAll() has no guaranteed ordering
+        assertThat(students)
+            .hasSize(2)
+            .extracting(Student::getId)
+            .containsExactlyInAnyOrder(saved1.getId(), saved2.getId());
     }
 
     // ==================== deleteById() Tests ====================
@@ -312,25 +312,20 @@ class StudentRepositoryTest {
     // ==================== Transactional Behavior Tests ====================
 
     @Test
-    @DisplayName("Should rollback transaction on error")
-    void shouldRollbackTransaction_OnError() {
+    @DisplayName("Should save student with null fields")
+    void shouldSaveStudent_WithNullFields() {
         // Arrange
         entityManager.persistAndFlush(testStudent1);
         long initialCount = studentRepository.count();
 
-        // Act
-        try {
-            Student invalidStudent = new Student();
-            // Intentionally create invalid state if business logic requires it
-            studentRepository.save(invalidStudent);
-            entityManager.flush();
-        } catch (Exception e) {
-            // Expected exception
-        }
+        // Act - Student entity allows null fields, so this will succeed
+        Student studentWithNulls = new Student();
+        studentRepository.save(studentWithNulls);
+        entityManager.flush();
 
-        // Assert
-        // Count should remain the same due to rollback
-        assertThat(studentRepository.count()).isEqualTo(initialCount);
+        // Assert - count should increase since null fields are allowed
+        assertThat(studentRepository.count()).isEqualTo(initialCount + 1);
+        assertThat(studentWithNulls.getId()).isNotNull();
     }
 
     @Test

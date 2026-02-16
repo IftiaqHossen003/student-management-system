@@ -54,14 +54,9 @@ jobs:
       - name: Compile project
         run: mvn clean compile -B
       
-      # Run unit tests
-      - name: Run unit tests
-        run: mvn test -B -Dspring.profiles.active=test
-      
-      # Run integration tests (if separate profile exists)
-      - name: Run integration tests
-        run: mvn verify -B -Dspring.profiles.active=test -DskipUnitTests=false
-        continue-on-error: false
+      # Run tests (unit and integration)
+      - name: Run tests
+        run: mvn verify -B -Dspring.profiles.active=test
       
       # Generate test coverage report
       - name: Generate test coverage
