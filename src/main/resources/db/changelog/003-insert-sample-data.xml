@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd">
+
+    <changeSet id="003-insert-sample-data" author="system">
+        <!-- Insert sample students -->
+        <insert tableName="students">
+            <column name="name" value="John Doe"/>
+            <column name="roll" value="CSE-001"/>
+        </insert>
+        <insert tableName="students">
+            <column name="name" value="Jane Smith"/>
+            <column name="roll" value="CSE-002"/>
+        </insert>
+        <insert tableName="students">
+            <column name="name" value="Bob Johnson"/>
+            <column name="roll" value="CSE-003"/>
+        </insert>
+
+        <!-- Insert admin user: admin/admin123 -->
+        <insert tableName="users">
+            <column name="id" value="1"/>
+            <column name="username" value="admin"/>
+            <column name="password" value="admin123"/>
+            <column name="enabled" valueBoolean="true"/>
+        </insert>
+        <insert tableName="user_roles">
+            <column name="user_id" value="1"/>
+            <column name="role" value="ADMIN"/>
+        </insert>
+
+        <!-- Insert regular user: user/user123 -->
+        <insert tableName="users">
+            <column name="id" value="2"/>
+            <column name="username" value="user"/>
+            <column name="password" value="user123"/>
+            <column name="enabled" valueBoolean="true"/>
+        </insert>
+        <insert tableName="user_roles">
+            <column name="user_id" value="2"/>
+            <column name="role" value="USER"/>
+        </insert>
+    </changeSet>
+
+</databaseChangeLog>
