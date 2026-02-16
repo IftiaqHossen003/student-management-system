@@ -24,8 +24,7 @@
         <insert tableName="users">
             <column name="id" value="1"/>
             <column name="username" value="admin"/>
-            <!-- BCrypt hash for 'admin123' -->
-            <column name="password" value="$2a$10$8.UnVuG9HHgffUDAlk8qfOuVGkqRzgVymGe07xd00DMxs.AQubh4a"/>
+            <column name="password" value="admin123"/>
             <column name="enabled" valueBoolean="true"/>
         </insert>
         <insert tableName="user_roles">
@@ -37,8 +36,7 @@
         <insert tableName="users">
             <column name="id" value="2"/>
             <column name="username" value="user"/>
-            <!-- BCrypt hash for 'user123' -->
-            <column name="password" value="$2a$10$dXJ3SW6G7P50lGmMkkmwe.20cQQubK3.HZWzG3YB1tlRy.fqvM/BG"/>
+            <column name="password" value="user123"/>
             <column name="enabled" valueBoolean="true"/>
         </insert>
         <insert tableName="user_roles">
