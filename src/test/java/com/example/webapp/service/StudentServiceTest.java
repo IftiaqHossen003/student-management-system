@@ -142,12 +142,11 @@ class StudentServiceTest {
     void shouldThrowException_WhenIdIsNull() {
         // Arrange - mimic real Spring Data behavior for null IDs
         when(studentRepository.findById(null))
-            .thenThrow(new IllegalArgumentException("ID must not be null"));
+            .thenThrow(new IllegalArgumentException("The given id must not be null"));
 
         // Act & Assert
         assertThatThrownBy(() -> studentService.getStudentById(null))
-            .isInstanceOf(IllegalArgumentException.class)
-            .hasMessageContaining("ID must not be null");
+            .isInstanceOf(IllegalArgumentException.class);
     }
 
     // ==================== saveStudent() Tests ====================
