@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
+import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.util.List;
@@ -156,9 +157,10 @@ class StudentRepositoryTest {
     @Test
     @DisplayName("Should throw exception when finding with null ID")
     void shouldThrowException_WhenFindingWithNullId() {
-        // Act & Assert
+        // Act & Assert - Spring Data JPA wraps IllegalArgumentException in InvalidDataAccessApiUsageException
         assertThatThrownBy(() -> studentRepository.findById(null))
-            .isInstanceOf(IllegalArgumentException.class);
+            .isInstanceOf(InvalidDataAccessApiUsageException.class)
+            .hasMessageContaining("The given id must not be null");
     }
 
     // ==================== findAll() Tests ====================
